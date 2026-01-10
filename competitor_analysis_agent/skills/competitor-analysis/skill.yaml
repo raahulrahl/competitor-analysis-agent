@@ -161,26 +161,26 @@ documentation:
 
     Output Structure:
     # Competitive Analysis Report: {Target Company}
-    
+
     ## Executive Summary
     {High-level overview of competitive landscape and key findings}
-    
+
     ## Research Methodology
     - Search queries used
     - Websites analyzed
     - Key information sources
-    
+
     ## Market Overview
     ### Industry Context
     - Market size and growth rate
     - Key trends and drivers
     - Regulatory environment
-    
+
     ### Competitive Landscape
     - Major players identified
     - Market segmentation
     - Competitive dynamics
-    
+
     ## Competitor Analysis
     ### Competitor 1: {Name}
     #### Company Overview
@@ -188,62 +188,62 @@ documentation:
     - Founded: {Year}
     - Headquarters: {Location}
     - Company size: {Employees/Revenue if available}
-    
+
     #### Products & Services
     - Core offerings
     - Key features and capabilities
     - Pricing model and tiers
     - Target market segments
-    
+
     #### Digital Presence Analysis
     - Website structure and user experience
     - Key messaging and value propositions
     - Content strategy and resources
     - Customer proof points
-    
+
     #### SWOT Analysis
     **Strengths:** {Evidence-based strengths}
     **Weaknesses:** {Identified weaknesses}
     **Opportunities:** {Market opportunities}
     **Threats:** {Competitive threats}
-    
+
     ## Comparative Analysis
     ### Feature Comparison Matrix
     | Feature | {Target} | Competitor 1 | Competitor 2 | Competitor 3 |
-    
+
     ### Pricing Comparison
     | Company | Entry Level | Professional | Enterprise |
-    
+
     ### Market Positioning Analysis
     {Analysis of how each competitor positions themselves}
-    
+
     ## Strategic Insights
     ### Key Findings
     1. {Major insight with evidence}
     2. {Competitive dynamics observed}
     3. {Market gaps identified}
-    
+
     ### Competitive Advantages
     - {Target company's advantages}
     - {Unique differentiators}
-    
+
     ### Competitive Risks
     - {Main threats from competitors}
     - {Market challenges}
-    
+
     ## Strategic Recommendations
     ### Immediate Actions (0-3 months)
     1. {Quick competitive responses}
     2. {Low-hanging fruit opportunities}
-    
+
     ### Short-term Strategy (3-12 months)
     1. {Product/service enhancements}
     2. {Market positioning adjustments}
-    
+
     ### Long-term Strategy (12+ months)
     1. {Sustainable differentiation}
     2. {Market expansion opportunities}
-    
+
     ## Conclusion
     {Summary of competitive position and strategic imperatives}
 
