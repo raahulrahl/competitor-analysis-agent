@@ -457,5 +457,4 @@ Contributions welcome! Please:
   Built with <a href="https://github.com/getbindu/bindu">Bindu</a> •
   <a href="https://github.com/Paraschamoli/competitor-analysis-agent">⭐ Star this repo</a> •
   <a href="https://bindus.directory">🌐 Register on bindus.directory</a>
-</p>#   c o m p e t i t o r - a n a l y s i s - a g e n t  
- 
+</p>
