@@ -118,7 +118,7 @@ jobs:
             --arg repo_url "https://github.com/${{ github.repository }}" \
             --arg commit_sha "${{ github.sha }}" \
             --arg build_number "${{ github.run_number }}" \
-            --arg docs_url "https://Paraschamoli.github.io/competitor-analysis-agent/" \
+            --arg docs_url "https://github.com/Paraschamoli/competitor-analysis-agent#readme" \
             --arg domain "$METADATA_DOMAIN" \
             --arg specialization "$METADATA_SPECIALIZATION" \
             --arg last_updated "${{ github.event.head_commit.timestamp }}" \
