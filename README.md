@@ -62,7 +62,7 @@ cp .env.example .env
 
 ```bash
 # Start the agent server
-python -m competitor_analysis_agent
+uv run python -m competitor_analysis_agent
 
 # Agent runs on http://localhost:3773
 ```
