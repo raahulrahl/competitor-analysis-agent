@@ -214,6 +214,15 @@ documentation:
           ## Executive Summary
           Comprehensive analysis of Stripe's competitive position in the payments industry...
 
+    - title: "Competitive Analysis with Clarification"
+      input:
+        parts:
+          - kind: "text"
+            text: "Provide a detailed competitive analysis report for Stripe in the payments industry"
+      output:
+        text: |
+          What is the purpose of this competitive analysis report? (Options: Business strategy development, Investor presentation, Academic research, General industry insight, Other)
+
   best_practices:
     for_developers:
       - "Provide clear target company and industry"
