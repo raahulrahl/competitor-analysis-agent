@@ -7,7 +7,6 @@ readme = "README.md"
 keywords = ['python']
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "bindu==2026.9.2.2",
     "agno>=2.2.0",
     "requests>=2.31.0",
     "pyperclip>=1.8.0",
@@ -21,6 +20,7 @@ dependencies = [
     "arxiv>=2.4.0",
     "pypdf>=6.6.0",
     "mcp>=1.26.0",
+    "bindu==2026.9.4",
 ]
 classifiers = [
     "Intended Audience :: Developers",
