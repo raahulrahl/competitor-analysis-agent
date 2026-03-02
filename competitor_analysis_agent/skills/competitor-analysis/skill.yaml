@@ -5,15 +5,16 @@ author: paras@getbindu.com
 
 # Description
 description: |
-  AI-powered competitive intelligence assistant that performs comprehensive
-  market research and competitor analysis using web search and scraping.
+  Performs comprehensive competitive intelligence and market research by analyzing
+  competitors, market positioning, pricing, features, and strategic dynamics.
+  Combines web research, structured analysis, and reasoning to generate actionable
+  strategic reports including SWOT analysis, comparison matrices, and prioritized
+  recommendations.
 
 # Tags and Modes
 tags:
   - competitor-analysis
-  - market-research
-  - competitive-intelligence
-  - web-search
+  - business-intelligence
   - swot-analysis
 
 input_modes:
@@ -28,23 +29,33 @@ output_modes:
 examples:
   - "Analyze the competitive landscape for Stripe in the payments industry"
   - "Research competitors to Shopify in the e-commerce platform market"
-  - "Conduct a competitive analysis of Zoom in the video conferencing space"
+  - "Compare Salesforce with its main competitors in the CRM market"
+  - "Perform SWOT analysis on Apple's competitors in the smartphone market"
 
 # Detailed Capabilities
 capabilities_detail:
   primary_capability:
     supported: true
-    description: "Comprehensive competitive intelligence and market research"
+    description: "Comprehensive competitor and market landscape analysis"
     features:
-      - "Web search for competitor discovery"
-      - "Website scraping for detailed information extraction"
-      - "SWOT analysis and strategic recommendations"
-    limitations: "Requires API keys for web services; limited to publicly accessible content"
+      - "Identifies direct and indirect competitors"
+      - "Performs SWOT analysis for each competitor"
+      - "Builds feature comparison matrices"
+      - "Analyzes pricing models and positioning strategies"
+      - "Evaluates competitive advantages and weaknesses"
+      - "Synthesizes findings into strategic insights"
+      - "Generates prioritized strategic recommendations"
+    limitations: "Dependent on publicly available information; may not access proprietary or private data"
 
   secondary_capability:
-    supported: false
-    planned_version: "2.0.0"
-    description: "Advanced sentiment analysis and trend forecasting"
+    supported: true
+    description: "Structured reporting and strategic recommendation generation"
+    features:
+      - "Executive summaries for decision-makers"
+      - "Comparative positioning analysis"
+      - "Market trend and opportunity identification"
+      - "Risk and threat evaluation"
+      - "Immediate, short-term, and long-term action planning"
 
 # Requirements
 requirements:
@@ -55,12 +66,11 @@ requirements:
     - "python-dotenv>=1.0.1"
     - "bindu"
   system:
-    - "Python 3.12+"
-    - "Internet access"
+    - "Internet access for research"
   min_memory_mb: 512
   external_services:
     - "Firecrawl API"
-    - "OpenAI or OpenRouter API"
+    - "OpenAI API or OpenRouter API"
 
 # Performance Metrics
 performance:
@@ -74,216 +84,187 @@ allowed_tools:
   - Read
   - Write
   - Execute
-  - FirecrawlSearch
-  - FirecrawlCrawl
-  - FirecrawlMap
-  - Think
-  - Analyze
-  - Reason
   - Search
   - Extract
-  - ArxivTools
-  - Mem0Tools
+  - Analyze
+  - Reason
 
 # Rich Documentation
 documentation:
   overview: |
-    AI-powered competitive intelligence agent that systematically analyzes
-    the competitive landscape for any target company. Uses web search and
-    scraping to gather information, then synthesizes findings into strategic
-    reports with SWOT analysis and recommendations.
+    This skill provides structured competitive intelligence for businesses and
+    strategic decision-making. It systematically identifies competitors, evaluates
+    their offerings and positioning, performs SWOT analysis, and produces
+    actionable recommendations. Designed for product strategy, market entry,
+    investment analysis, and competitive positioning initiatives.
 
   use_cases:
     when_to_use:
       - "Market entry strategy development"
       - "Competitive positioning analysis"
-      - "Strategic planning and business development"
+      - "Product roadmap planning"
+      - "Strategic business planning"
+      - "Investment or due diligence research"
+      - "Pricing and differentiation analysis"
 
     when_not_to_use:
-      - "Real-time chat conversations"
-      - "Financial calculations"
-      - "Legal analysis"
+      - "Simple company information lookup"
+      - "Pure financial modeling without competitive context"
+      - "Legal compliance reviews"
+      - "Creative marketing copy generation"
 
   input_structure: |
-    JSON-RPC 2.0 message with user query in parts array.
+    Accepts target company name, industry, or structured competitive request
+    in plain text or JSON format.
 
     Example:
     {
-      "jsonrpc": "2.0",
-      "method": "message/send",
-      "params": {
-        "message": {
-          "role": "user",
-          "parts": [
-            {
-              "kind": "text",
-              "text": "Analyze the competitive landscape for Stripe in the payments industry"
-            }
-          ],
-          "kind": "message",
-          "messageId": "990e8400-e29b-41d4-a716-446655440401",
-          "contextId": "990e8400-e29b-41d4-a716-446655440402",
-          "taskId": "990e8400-e29b-41d4-a716-446655440489"
-        },
-        "configuration": {
-          "acceptedOutputModes": ["application/json"]
-        }
-      },
-      "id": "990e8400-e29b-41d4-a716-446655440404"
+      "target_company": "Stripe",
+      "industry": "payments",
+      "depth": "quick | standard | comprehensive",
+      "focus": ["pricing", "features", "positioning"],
+      "competitor_count": 3
     }
+
+    Constraints:
+    - Target company must be clearly specified
+    - Industry context improves accuracy
+    - Minimum 10 words for meaningful analysis
+    - Maximum ~5,000 words per request
+    - English language preferred
 
   output_format: |
-    JSON-RPC 2.0 result with task history and artifacts.
+    Returns structured competitive analysis report including:
 
-    Completed Response:
-    {
-      "jsonrpc": "2.0",
-      "id": "990e8400-e29b-41d4-a716-446655440405",
-      "result": {
-        "id": "990e8400-e29b-41d4-a716-446655440489",
-        "context_id": "990e8400-e29b-41d4-a716-446655440402",
-        "kind": "task",
-        "status": {
-          "state": "completed",
-          "timestamp": "2026-02-25T12:05:00.000000+00:00"
-        },
-        "history": [
-          {
-            "kind": "message",
-            "role": "user",
-            "parts": [{"kind": "text", "text": "Analyze the competitive landscape for Stripe..."}]
-          },
-          {
-            "kind": "message",
-            "role": "assistant",
-            "parts": [{"kind": "text", "text": "# Competitive Analysis Report: Stripe\n\n## Executive Summary..."}]
-          }
-        ],
-        "artifacts": [
-          {
-            "name": "result",
-            "parts": [{"kind": "text", "text": "Detailed competitive analysis report in markdown"}]
-          }
-        ]
-      }
-    }
-
-    Input-Required Response:
-    {
-      "jsonrpc": "2.0",
-      "id": "990e8400-e29b-41d4-a716-446655440405",
-      "result": {
-        "id": "990e8400-e29b-41d4-a716-446655440489",
-        "context_id": "990e8400-e29b-41d4-a716-446655440402",
-        "kind": "task",
-        "status": {
-          "state": "input-required",
-          "timestamp": "2026-02-25T12:00:06.000000+00:00"
-        },
-        "history": [
-          {
-            "kind": "message",
-            "role": "user",
-            "parts": [{"kind": "text", "text": "Analyze the competitive landscape for Stripe..."}]
-          },
-          {
-            "kind": "message",
-            "role": "assistant",
-            "parts": [{"kind": "text", "text": "What is the purpose of this competitive analysis report? (Options: Business strategy development, Investor presentation, General industry insight)"}]
-          }
-        ]
-      }
-    }
+    - EXECUTIVE SUMMARY: Overview of landscape and major findings
+    - MARKET OVERVIEW:
+        - Industry context
+        - Market dynamics
+        - Key players identified
+    - COMPETITOR PROFILES:
+        - Company overview
+        - Products and services
+        - Pricing model
+        - Target segments
+        - SWOT analysis (Strengths, Weaknesses, Opportunities, Threats)
+    - COMPARATIVE ANALYSIS:
+        - Feature comparison matrix
+        - Pricing comparison
+        - Market positioning assessment
+    - STRATEGIC INSIGHTS:
+        - Key competitive findings
+        - Identified market gaps
+        - Risk assessment
+    - STRATEGIC RECOMMENDATIONS:
+        - Immediate actions (0–3 months)
+        - Short-term strategy (3–12 months)
+        - Long-term strategy (12+ months)
+    - CONCLUSION: Overall strategic positioning summary
 
   error_handling:
-    - "Missing API keys: Clear error message with setup instructions"
-    - "Website access blocked: Attempt alternative sources"
-    - "API timeout: Retry with backoff"
-    - "Rate limiting: Queue requests"
+    - "Missing target company: Returns error requesting clarification"
+    - "Insufficient data found: Provides partial analysis with documented gaps"
+    - "Website access limitations: Notes restricted or unavailable sources"
+    - "API timeout: Retries with exponential backoff, max 3 attempts"
+    - "Rate limiting: Queues request and provides delay notice"
 
   examples:
-    - title: "Payments Industry Analysis"
+    - title: "Stripe Competitive Landscape"
       input:
         parts:
           - kind: "text"
             text: "Analyze the competitive landscape for Stripe in the payments industry"
       output:
-        text: |
-          # Competitive Analysis Report: Stripe
+        executive_summary: "Analysis of major fintech competitors with SWOT and pricing comparison"
+        competitors_analyzed: 4
+        strategic_recommendations: 6
+        processing_time_ms: 6800
 
-          ## Executive Summary
-          Comprehensive analysis of Stripe's competitive position in the payments industry...
-
-    - title: "Competitive Analysis with Clarification"
+    - title: "Shopify Market Comparison"
       input:
-        parts:
-          - kind: "text"
-            text: "Provide a detailed competitive analysis report for Stripe in the payments industry"
+        content: "Research competitors to Shopify in the e-commerce platform market"
       output:
-        text: |
-          What is the purpose of this competitive analysis report? (Options: Business strategy development, Investor presentation, Academic research, General industry insight, Other)
+        executive_summary: "Comprehensive competitor matrix and positioning analysis"
+        competitors_analyzed: 5
+        feature_matrix_size: 12
+        processing_time_ms: 7200
 
   best_practices:
     for_developers:
-      - "Provide clear target company and industry"
-      - "Use JSON for structured requests"
-      - "Allow 5-10 second processing time"
+      - "Specify industry context for more accurate results"
+      - "Use JSON format for structured analysis requests"
+      - "Allow sufficient processing time for comprehensive research"
+      - "Cache frequently analyzed companies where possible"
 
     for_orchestrators:
-      - "Route competitive analysis requests here"
-      - "Expect web scraping time"
-      - "Monitor API usage"
+      - "Route competitive intelligence and market analysis requests here"
+      - "Avoid routing simple lookup queries"
+      - "Limit concurrency to 3 requests due to research depth"
+      - "Implement 60-second timeout safeguards"
+      - "Monitor external API usage and cost controls"
 
   installation: |
-    Install via uv package manager.
-
     Required packages:
     uv sync
 
-    Environment variables:
-    FIRECRAWL_API_KEY=<your-key>
-    OPENAI_API_KEY=<your-key> or OPENROUTER_API_KEY=<your-key>
+    Environment variables required:
+    - FIRECRAWL_API_KEY
+    - OPENAI_API_KEY or OPENROUTER_API_KEY
+    - MEM0_API_KEY (optional)
 
-    Run:
-    uv run python -m competitor_analysis_agent
+    Quick start:
+    1. Clone repository
+    2. Configure environment variables
+    3. Run: uv venv --python 3.12.9 && source .venv/bin/activate
+    4. Run: uv sync
+    5. Start agent: python -m competitor_analysis_agent.main
 
   versioning:
     - version: "1.0.0"
       date: "2026-01-10"
-      changes: "Initial release with competitive analysis capabilities"
+      changes: "Initial release with competitor discovery, SWOT analysis, comparison matrices, and strategic recommendations"
     - version: "1.1.0"
       status: "planned"
-      changes: "Enhanced web scraping and sentiment analysis"
+      changes: "Enhanced benchmarking metrics and sentiment analysis integration"
 
 # Assessment fields for skill negotiation
 assessment:
   keywords:
-    - "analyze"
     - "competitor"
     - "competitive"
     - "market research"
     - "swot"
     - "strategy"
-    - "intelligence"
+    - "positioning"
+    - "benchmark"
+    - "industry landscape"
+    - "business intelligence"
 
   specializations:
     - domain: "competitive intelligence"
       confidence_boost: 0.8
     - domain: "market research"
-      confidence_boost: 0.2
+      confidence_boost: 0.4
+    - domain: "strategic analysis"
+      confidence_boost: 0.3
+    - domain: "business strategy"
+      confidence_boost: 0.3
 
   anti_patterns:
-    - "summarize document"
+    - "summarize this document"
     - "translate text"
-    - "generate creative content"
+    - "write marketing copy"
+    - "creative writing"
+    - "pure financial calculation"
 
   complexity_indicators:
     simple:
-      - "quick competitor lookup"
-      - "basic company information"
+      - "basic competitor lookup"
+      - "company overview"
     medium:
-      - "standard competitive analysis with 3-5 competitors"
-      - "feature comparison"
+      - "standard competitor comparison"
+      - "feature matrix"
     complex:
-      - "comprehensive industry analysis with 5+ competitors"
-      - "full SWOT analysis"
+      - "comprehensive industry analysis"
+      - "multi-competitor SWOT analysis"
+      - "strategic roadmap recommendations"
