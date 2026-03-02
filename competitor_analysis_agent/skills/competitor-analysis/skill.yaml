@@ -1,7 +1,7 @@
 id: competitor-analysis-v1
 name: competitor-analysis
 version: 1.0.0
-author: paras25619@gmail.com
+author: paras@getbindu.com
 
 # Description
 description: |
@@ -13,9 +13,6 @@ description: |
 
 # Tags and Modes
 tags:
-  - competitive-intelligence
-  - market-research
-  - strategic-analysis
   - competitor-analysis
   - business-intelligence
   - swot-analysis
@@ -27,7 +24,6 @@ input_modes:
 output_modes:
   - text/plain
   - application/json
-  - text/markdown
 
 # Example Queries
 examples:
@@ -68,6 +64,7 @@ requirements:
     - "firecrawl-py>=1.0.0"
     - "openai>=2.11.0"
     - "python-dotenv>=1.0.1"
+    - "bindu"
   system:
     - "Internet access for research"
   min_memory_mb: 512
@@ -120,10 +117,7 @@ documentation:
     Accepts target company name, industry, or structured competitive request
     in plain text or JSON format.
 
-    Example (Plain Text):
-    "Analyze the competitive landscape for Stripe in the payments industry"
-
-    Example (JSON):
+    Example:
     {
       "target_company": "Stripe",
       "industry": "payments",
@@ -177,7 +171,9 @@ documentation:
   examples:
     - title: "Stripe Competitive Landscape"
       input:
-        content: "Analyze the competitive landscape for Stripe in the payments industry"
+        parts:
+          - kind: "text"
+            text: "Analyze the competitive landscape for Stripe in the payments industry"
       output:
         executive_summary: "Analysis of major fintech competitors with SWOT and pricing comparison"
         competitors_analyzed: 4
@@ -238,7 +234,6 @@ assessment:
     - "competitive"
     - "market research"
     - "swot"
-    - "analysis"
     - "strategy"
     - "positioning"
     - "benchmark"
@@ -247,7 +242,7 @@ assessment:
 
   specializations:
     - domain: "competitive intelligence"
-      confidence_boost: 0.4
+      confidence_boost: 0.8
     - domain: "market research"
       confidence_boost: 0.4
     - domain: "strategic analysis"

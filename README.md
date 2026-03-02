@@ -3,10 +3,10 @@
 </p>
 
 <h1 align="center">🔬 AI-Powered Competitive Intelligence Agent</h1>
-<h3 align="center">Comprehensive web-based competitor research and strategic analysis</h3>
+<h3 align="center">Expert Competitor Analysis and Strategic Insights</h3>
 
 <p align="center">
-  <strong>Automated competitor discovery, website analysis, and strategic reporting powered by AI</strong><br/>
+  <strong>AI-driven competitor research and analysis for informed business decisions</strong><br/>
   A production-ready agent that performs deep competitive intelligence using web search and scraping
 </p>
 
@@ -31,6 +31,16 @@ Your **competitor-analysis-agent** is a sophisticated AI agent that:
     *   Pricing analysis
     *   Market positioning insights
     *   Strategic recommendations
+
+---
+
+## Skills
+The agent includes the `competitor-analysis` skill for comprehensive competitive intelligence:
+- **Primary Capability**: Comprehensive competitive intelligence and market research
+- **Features**: Web search for competitor discovery, website scraping for detailed information extraction, SWOT analysis and strategic recommendations
+- **Limitations**: Requires API keys for web services; limited to publicly accessible content
+
+- **Secondary Capability**: Strategic reporting and actionable insights generation (planned for v2.0.0)
 
 ---
 
@@ -177,53 +187,48 @@ Your agent follows this intelligent five-phase workflow:
 
 ## 🎨 Usage Examples
 
-### Example 1: Basic Competitor Analysis
-```json
-{
-  "messages": [
-    {
+### Via JSON-RPC API
+
+```bash
+curl --location 'http://localhost:3773' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer sk-or-v1-...' \
+--data '{
+  "jsonrpc": "2.0",
+  "method": "message/send",
+  "params": {
+    "message": {
       "role": "user",
-      "content": "Perform competitive analysis for Slack. Identify top 3 competitors and analyze their features."
+      "parts": [
+        {
+          "kind": "text",
+          "text": "Analyze the competitive landscape for Slack. Identify top 3 competitors and analyze their features."
+        }
+      ],
+      "kind": "message",
+      "messageId": "990e8400-e29b-41d4-a716-446655440401",
+      "contextId": "990e8400-e29b-41d4-a716-446655440402",
+      "taskId": "990e8400-e29b-41d4-a716-446655440489"
+    },
+    "configuration": {
+      "acceptedOutputModes": [
+        "application/json"
+      ]
     }
-  ]
-}
+  },
+  "id": "990e8400-e29b-41d4-a716-446655440404"
+}'
 ```
 
-### Example 2: Industry Analysis
-```json
-{
-  "messages": [
-    {
-      "role": "user",
-      "content": "Analyze the project management software market. Compare Asana, Monday.com, and ClickUp."
-    }
-  ]
-}
-```
+### Sample Competitor Analysis Queries
 
-### Example 3: Strategic Insights
-```json
-{
-  "messages": [
-    {
-      "role": "user",
-      "content": "Based on analysis of Canva and Figma, what market opportunities exist for a new design tool?"
-    }
-  ]
-}
-```
-
-### Example 4: Research-Enhanced Analysis
-```json
-{
-  "messages": [
-    {
-      "role": "user",
-      "content": "Analyze the competitive landscape for AI coding assistants. Include relevant research papers and academic insights."
-    }
-  ]
-}
-```
+- "Analyze the competitive landscape for Stripe in the payments industry"
+- "Research competitors to Shopify in the e-commerce platform market"
+- "Conduct a competitive analysis of Zoom in the video conferencing space"
+- "Compare Salesforce with its main competitors in the CRM market"
+- "Analyze market positioning of Tesla versus other EV manufacturers"
+- "Research direct and indirect competitors for Netflix"
+- "Perform SWOT analysis on Apple's main competitors in smartphone market"
 
 ---
 
@@ -248,6 +253,59 @@ competitor-analysis-agent/
 ├── tests/                              # Test files
 │   └── test_main.py                    # Agent tests
 └── README.md                           # This file
+```
+
+## 🔌 API Reference
+
+### Health Check
+
+```bash
+GET http://localhost:3773/health
+```
+
+Response:
+```json
+{"status": "healthy", "agent": "Competitor Analysis Agent"}
+```
+
+### Chat Endpoint
+
+```bash
+POST http://localhost:3773/chat
+Content-Type: application/json
+
+{
+  "messages": [
+    {"role": "user", "content": "Your competitor analysis query here"}
+  ]
+}
+```
+
+## 🧪 Testing
+
+### Local Testing
+
+```bash
+# Install test dependencies
+uv sync --group dev
+
+# Run tests
+pytest tests/
+
+# Test with specific API keys
+FIRECRAWL_API_KEY=test_key python -m pytest
+```
+
+### Integration Test
+
+```bash
+# Start agent
+python competitor_analysis_agent/main.py &
+
+# Test API endpoint
+curl -X POST http://localhost:3773/chat \
+  -H "Content-Type: application/json" \
+  -d '{"messages": [{"role": "user", "content": "Analyze competitors for Trello"}]}'
 ```
 
 ### Key Implementation Details
@@ -280,13 +338,21 @@ Your agent (`competitor_analysis_agent/main.py`) features:
 
 ---
 
-## 🛠️ Development Commands
+## � Dependencies
 
-```bash
-# Install dependencies
-uv sync
+### Core Packages
+*   **bindu** - Agent deployment framework
+*   **agno** - AI agent framework
+*   **firecrawl-py** - Web scraping and search
+*   **openai** - OpenAI client
+*   **requests** - HTTP requests
+*   **rich** - Console output
+*   **python-dotenv** - Environment management
 
-# Run tests
+### Development Packages
+*   **pytest** - Testing framework
+*   **ruff** - Code formatting/linting
+*   **pre-commit** - Git hooks
 uv run pytest
 
 # Format code
@@ -436,25 +502,48 @@ MIT License - See LICENSE file for details.
 
 ## 🤝 Contributing
 
-Contributions welcome! Please:
+Contributions welcome! Please follow these steps:
+
 1.  Fork the repository
-2.  Create a feature branch
-3.  Add tests for new functionality
-4.  Submit a pull request
+2.  Create a feature branch: `git checkout -b feature/improvement`
+3.  Make your changes following the code style
+4.  Add tests for new functionality
+5.  Commit with descriptive messages
+6.  Push to your fork
+7.  Open a Pull Request
 
-## 📞 Support
+**Code Style:**
+*   Follow PEP 8 conventions
+*   Use type hints where possible
+*   Add docstrings for public functions
+*   Keep functions focused and small
 
-*   **Issues:** GitHub Issues
-*   **Email:** paras25619@gmail.com
-*   **Documentation:** In-code documentation and examples
-*   **Community:** Bindu Discord
+## 🙏 Credits & Acknowledgments
+
+*   **Developer:** Paras Chamoli
+*   **Framework:** Bindu - Agent deployment platform
+*   **Agent Framework:** Agno - AI agent toolkit
+*   **Web Intelligence:** Firecrawl - Advanced web scraping
+*   **Reasoning Tools:** Agno ReasoningTools for critical analysis
+
+## 🔗 Useful Links
+
+*   🌐 **Bindu Directory:** [bindus.directory](https://bindus.directory)
+*   📚 **Bindu Docs:** [docs.getbindu.com](https://docs.getbindu.com)
+*   🐙 **GitHub:** [github.com/ParasChamoli/competitor-analysis-agent](https://github.com/ParasChamoli/competitor-analysis-agent)
+*   💬 **Discord:** Bindu Community
 
 <br/>
+
 <p align="center">
-  <strong>Transform hours of competitive research into minutes of AI-powered insights</strong>
+  <strong>Built with ❤️ by Paras Chamoli</strong><br/>
+  <em>Transforming competitive research with AI-powered analysis</em>
 </p>
+
 <p align="center">
-  Built with <a href="https://github.com/getbindu/bindu">Bindu</a> •
-  <a href="https://github.com/Paraschamoli/competitor-analysis-agent">⭐ Star this repo</a> •
-  <a href="https://bindus.directory">🌐 Register on bindus.directory</a>
+  <a href="https://github.com/ParasChamoli/competitor-analysis-agent/stargazers">⭐ Star on GitHub</a> •
+  <a href="https://bindus.directory">🌐 Register on Bindu</a> •
+  <a href="https://github.com/ParasChamoli/competitor-analysis-agent/issues">🐛 Report Issues</a>
 </p>
+
+---
