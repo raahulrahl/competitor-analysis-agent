@@ -37,7 +37,7 @@
     {
       "key": "MEM0_API_KEY",
       "description": "Mem0 API key for memory operations",
-      "required": false
+      "required": true
     }
   ],
   "metadata": {
