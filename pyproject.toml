@@ -2,7 +2,7 @@
 name = "competitor-analysis-agent"
 version = "0.1.0"
 description = "A market research agent for comprehensive competitive analysis and strategic insights"
-authors = [{ name = "Paras Chamoli", email = "paras25619@gmail.com" }]
+authors = [{ name = "Paras Chamoli", email = "paras@getbindu.com" }]
 readme = "README.md"
 keywords = ['python']
 requires-python = ">=3.12,<3.13"
