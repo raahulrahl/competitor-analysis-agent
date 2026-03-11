@@ -57,14 +57,13 @@ jobs:
           cache-from: type=registry,ref=${{ env.DOCKER_REPOSITORY }}:buildcache
           cache-to: type=registry,ref=${{ env.DOCKER_REPOSITORY }}:buildcache,mode=max
 
-      - name: Read agent config and skills
-        id: read_config
+      - name: Read agent config
+        id: agent_config
         run: |
-          # Read agent config
           echo "config=$(cat competitor_analysis_agent/agent_config.json | jq -c .)" >> $GITHUB_OUTPUT
           echo "version=$(cat .version | tr -d '\n')" >> $GITHUB_OUTPUT
 
-          # Read all skills from the skills folder and write to a file
+          # Read all skills from the skills folder
           skills_array="[]"
           for skill_dir in competitor_analysis_agent/skills/*/; do
             if [ -f "${skill_dir}skill.yaml" ]; then
@@ -72,97 +71,144 @@ jobs:
               skills_array=$(echo "$skills_array" | jq --argjson skill "$skill_json" '. += [$skill]')
             fi
           done
+          echo "skills=$(echo $skills_array | jq -c .)" >> $GITHUB_OUTPUT
 
-          # Write skills to a file instead of passing as output variable
-          echo "$skills_array" > /tmp/skills.json
-
-          # Write environment variables to a file
-          cat competitor_analysis_agent/agent_config.json | jq '.environment_variables // []' > /tmp/env_vars.json
-
-          # Write execution cost to a file
-          cat competitor_analysis_agent/agent_config.json | jq '.execution_cost // {}' > /tmp/exec_cost.json
-
-          # Write auth to a file
-          cat competitor_analysis_agent/agent_config.json | jq '.auth // {}' > /tmp/auth.json
-
-      - name: Log to backend service
-        env:
-          BINDU_API_TOKEN: ${{ secrets.BINDU_API_TOKEN }}
+      - name: Register agent deployment
+        id: register
         run: |
-          # Read the config values
-          AGENT_NAME=$(cat competitor_analysis_agent/agent_config.json | jq -r '.name')
-          AGENT_AUTHOR=$(cat competitor_analysis_agent/agent_config.json | jq -r '.author')
-          AGENT_DESCRIPTION=$(cat competitor_analysis_agent/agent_config.json | jq -r '.description')
-          AGENT_TRUST=$(cat competitor_analysis_agent/agent_config.json | jq -r '.agent_trust')
-          DEPLOYMENT_URL=$(cat competitor_analysis_agent/agent_config.json | jq -r '.deployment.url')
-          DEPLOYMENT_PROTOCOL=$(cat competitor_analysis_agent/agent_config.json | jq -r '.deployment.protocol_version')
-          METADATA_DOMAIN=$(cat competitor_analysis_agent/agent_config.json | jq -r '.metadata.domain // "general"')
-          METADATA_SPECIALIZATION=$(cat competitor_analysis_agent/agent_config.json | jq -r '.metadata.specialization // "multi-purpose"')
-          VERSION=$(cat .version | tr -d '\n')
+          # Create JSON payload file to avoid shell escaping issues
+          cat > /tmp/payload.json <<'EOF'
+          {
+            "agent": {
+              "name": "${{ fromJson(steps.agent_config.outputs.config).name }}",
+              "author": "${{ fromJson(steps.agent_config.outputs.config).author }}",
+              "description": "${{ fromJson(steps.agent_config.outputs.config).description }}",
+              "version": "${{ steps.agent_config.outputs.version }}",
+              "agent_trust": "${{ fromJson(steps.agent_config.outputs.config).agent_trust }}",
+              "type": "research"
+            },
+            "skills": ${{ toJson(fromJson(steps.agent_config.outputs.skills)) }},
+            "framework": {
+              "name": "agno",
+              "version": "1.0.0"
+            },
+            "environment_variables": ${{ toJson(fromJson(steps.agent_config.outputs.config).environment_variables) }},
+            "execution_cost": ${{ toJson(fromJson(steps.agent_config.outputs.config).execution_cost || fromJson('{}')) }},
+            "auth": ${{ toJson(fromJson(steps.agent_config.outputs.config).auth || fromJson('{}')) }},
+            "deployment": {
+              "url": "${{ fromJson(steps.agent_config.outputs.config).deployment.url }}",
+              "protocol_version": "${{ fromJson(steps.agent_config.outputs.config).deployment.protocol_version }}",
+              "docker_image": "${{ env.DOCKER_REPOSITORY }}:latest",
+              "docker_digest": "${{ steps.docker_build.outputs.digest }}",
+              "platforms": ["linux/amd64", "linux/arm64"]
+            },
+            "repository": {
+              "url": "https://github.com/${{ github.repository }}",
+              "commit_sha": "${{ github.sha }}",
+              "build_number": "${{ github.run_number }}"
+            },
+            "metadata": {
+              "documentation_url": "https://github.com/Paraschamoli/competitor-analysis-agent#readme",
+              "domain": "${{ fromJson(steps.agent_config.outputs.config).metadata.domain || 'general' }}",
+              "specialization": "${{ fromJson(steps.agent_config.outputs.config).metadata.specialization || 'multi-purpose' }}",
+              "last_updated": "${{ github.event.head_commit.timestamp }}"
+            }
+          }
+          EOF
 
-          # Create the final JSON payload using jq with file inputs
-          jq -n \
-            --arg name "$AGENT_NAME" \
-            --arg author "$AGENT_AUTHOR" \
-            --arg description "$AGENT_DESCRIPTION" \
-            --arg version "$VERSION" \
-            --arg agent_trust "$AGENT_TRUST" \
-            --slurpfile skills /tmp/skills.json \
-            --slurpfile env_vars /tmp/env_vars.json \
-            --slurpfile exec_cost /tmp/exec_cost.json \
-            --slurpfile auth /tmp/auth.json \
-            --arg url "$DEPLOYMENT_URL" \
-            --arg protocol_version "$DEPLOYMENT_PROTOCOL" \
-            --arg docker_image "${{ env.DOCKER_REPOSITORY }}:latest" \
-            --arg digest "${{ steps.docker_build.outputs.digest }}" \
-            --arg repo_url "https://github.com/${{ github.repository }}" \
-            --arg commit_sha "${{ github.sha }}" \
-            --arg build_number "${{ github.run_number }}" \
-            --arg docs_url "https://github.com/Paraschamoli/competitor-analysis-agent#readme" \
-            --arg domain "$METADATA_DOMAIN" \
-            --arg specialization "$METADATA_SPECIALIZATION" \
-            --arg last_updated "${{ github.event.head_commit.timestamp }}" \
-            '{
-              "agent": {
-                "name": $name,
-                "author": $author,
-                "description": $description,
-                "version": $version,
-                "agent_trust": $agent_trust,
-                "type": "research"
-              },
-              "skills": ($skills[0] // []),
-              "framework": {
-                "name": "agno",
-                "version": "1.0.0"
-              },
-              "environment_variables": ($env_vars[0] // []),
-              "execution_cost": ($exec_cost[0] // {}),
-              "auth": ($auth[0] // {}),
-              "deployment": {
-                "url": $url,
-                "protocol_version": $protocol_version,
-                "docker_image": $docker_image,
-                "docker_digest": $digest,
-                "platforms": ["linux/amd64", "linux/arm64"]
-              },
-              "repository": {
-                "url": $repo_url,
-                "commit_sha": $commit_sha,
-                "build_number": $build_number
-              },
-              "metadata": {
-                "documentation_url": $docs_url,
-                "domain": $domain,
-                "specialization": $specialization,
-                "last_updated": $last_updated
-              }
-            }' > /tmp/final_payload.json
-
-          # Send the request
-          curl --location 'https://bindus.getbindu.com/bindu-register' \
+          response=$(curl -w "\n%{http_code}" --location 'https://bindus.getbindu.com/bindu-register' \
             --header 'accept: application/json' \
             --header 'X-Bindu-CI: true' \
-            --header "X-API-Token: $BINDU_API_TOKEN" \
+            --header 'X-API-Token: ${{ secrets.BINDU_API_TOKEN }}' \
             --header 'Content-Type: application/json' \
-            --data @/tmp/final_payload.json
+            --data @/tmp/payload.json)
+
+          # Extract HTTP status code and body
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+
+          echo "HTTP Status: $http_code"
+          echo "Registration response: $body"
+
+          # Check if request was successful
+          if [ "$http_code" != "200" ]; then
+            echo "❌ Registration failed with HTTP $http_code"
+            echo "Response: $body"
+            exit 1
+          fi
+
+          # Parse response
+          agent_id=$(echo "$body" | jq -r '.agent_id')
+          deployment_id=$(echo "$body" | jq -r '.id')
+          status=$(echo "$body" | jq -r '.message')
+
+          # Validate extracted values
+          if [ "$agent_id" = "null" ] || [ -z "$agent_id" ]; then
+            echo "❌ Failed to extract agent_id from response"
+            exit 1
+          fi
+
+          if [ "$deployment_id" = "null" ] || [ -z "$deployment_id" ]; then
+            echo "❌ Failed to extract deployment_id from response"
+            exit 1
+          fi
+
+          echo "agent_id=$agent_id" >> $GITHUB_OUTPUT
+          echo "deployment_id=$deployment_id" >> $GITHUB_OUTPUT
+          echo "✅ Registration successful: $status"
+          echo "📦 Agent ID: $agent_id"
+          echo "🚀 Deployment ID: $deployment_id"
+
+      - name: Wait for deployment to complete
+        run: |
+          agent_id=${{ steps.register.outputs.agent_id }}
+          deployment_id=${{ steps.register.outputs.deployment_id }}
+
+          echo "🚀 Waiting for Argo deployment to complete..."
+          echo "Agent ID: $agent_id"
+          echo "Deployment ID: $deployment_id"
+
+          max_attempts=60  # 10 minutes (60 * 10 seconds)
+          attempt=0
+
+          while [ $attempt -lt $max_attempts ]; do
+            status_response=$(curl -s -w "\n%{http_code}" "https://bindus.getbindu.com/agents/$agent_id/deployment/$deployment_id/status")
+
+            http_code=$(echo "$status_response" | tail -n1)
+            body=$(echo "$status_response" | sed '$d')
+
+            if [ "$http_code" != "200" ]; then
+              echo "⚠️  Status check failed with HTTP $http_code (attempt $((attempt + 1))/$max_attempts)"
+              echo "Response: $body"
+              sleep 10
+              attempt=$((attempt + 1))
+              continue
+            fi
+
+            deployment_status=$(echo "$body" | jq -r '.status // .deployment_status // "unknown"')
+            echo "⏳ Deployment status: $deployment_status (attempt $((attempt + 1))/$max_attempts)"
+
+            if [ "$deployment_status" = "succeeded" ]; then
+              deployment_url=$(echo "$body" | jq -r '.deployment_url // "N/A"')
+              health_check_url=$(echo "$body" | jq -r '.health_check_url // "N/A"')
+              grafana_url=$(echo "$body" | jq -r '.grafana_dashboard_url // "N/A"')
+
+              echo "✅ Deployment succeeded!"
+              echo "🚀 Agent URL: $deployment_url"
+              echo "❤️  Health Check: $health_check_url"
+              echo "📊 Grafana Dashboard: $grafana_url"
+              exit 0
+            elif [ "$deployment_status" = "failed" ]; then
+              error=$(echo "$body" | jq -r '.deployment_error // .error // "Unknown error"')
+              echo "❌ Deployment failed: $error"
+              exit 1
+            fi
+
+            # Still deploying (pending or deploying status), wait and retry
+            sleep 10
+            attempt=$((attempt + 1))
+          done
+
+          echo "❌ Deployment timed out after 10 minutes"
+          echo "Last status: $deployment_status"
+          exit 1

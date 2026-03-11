@@ -4,7 +4,7 @@ info:
   description: |
     AI-powered competitive intelligence agent that performs comprehensive competitor analysis
     and generates strategic reports with SWOT analysis, feature comparisons, and market insights.
-    
+
     Uses Firecrawl for web scraping, ArxivTools for research papers, and reasoning capabilities
     to deliver structured competitive intelligence reports. Ideal for business strategy, market
     research, competitive positioning, and strategic planning.
@@ -1445,12 +1445,12 @@ components:
               - 'Expect 8-15 second response times for comprehensive reports'
           installation: |-
             Required packages: uv sync
-            
+
             Environment variables:
             - FIRECRAWL_API_KEY (required)
             - OPENAI_API_KEY or OPENROUTER_API_KEY (required)
             - MEM0_API_KEY (optional)
-            
+
             Run: uv run python -m competitor_analysis_agent
         assessment:
           keywords:
